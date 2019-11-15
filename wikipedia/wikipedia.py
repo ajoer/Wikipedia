@@ -31,7 +31,7 @@ def set_lang(prefix):
   global API_URL
   API_URL = 'http://' + prefix.lower() + '.wikipedia.org/w/api.php'
 
-  for cached_func in (search, suggest, summary):
+  for cached_func in (geosearch, search, suggest, summary):
     cached_func.clear_cache()
 
 
@@ -566,10 +566,10 @@ class WikipediaPage(object):
 
       request = _wiki_request(query_params)
 
-      if 'query' in request:
+      try:
         coordinates = request['query']['pages'][self.pageid]['coordinates']
         self._coordinates = (Decimal(coordinates[0]['lat']), Decimal(coordinates[0]['lon']))
-      else:
+      except KeyError:
         self._coordinates = None
 
     return self._coordinates
